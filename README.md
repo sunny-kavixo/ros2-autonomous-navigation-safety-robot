@@ -1,29 +1,25 @@
 # ROS2 Autonomous Navigation & Safety Robot
 
-A job-focused robotics software portfolio project built around **ROS 2, C++, autonomous navigation, simulation, and safety supervision**.
+A job-focused robotics software portfolio project using **ROS 2 Jazzy, C++, Gazebo, Nav2, SLAM Toolbox, LiDAR, TF/odometry, and safety supervision**.
 
-## Goal
-
-Build and validate an autonomous differential-drive mobile robot in simulation before hardware integration.
-
-## Architecture
+## System
 
 ```text
 Gazebo LiDAR + Odometry
           |
           v
-        ROS 2
+   SLAM Toolbox
+          |
+       map + TF
           |
           v
-  SLAM / Localization      (planned)
+         Nav2
           |
-          v
-         Nav2              (planned)
+       /cmd_vel
           |
           v
  Safety Supervisor (C++)
           |
-          v
     /cmd_vel_safe
           |
           v
@@ -32,65 +28,45 @@ Gazebo Differential Drive
 
 ## Implemented
 
-### C++ safety supervisor
-- `geometry_msgs/Twist` command input
-- `sensor_msgs/LaserScan` safety input
-- emergency-stop and slow zones
-- stale/invalid scan fail-safe
-- deterministic safety policy separated from ROS I/O
-- unit tests
-
-### Differential-drive simulation baseline
-- Xacro/URDF mobile robot
-- left/right continuous drive wheels
-- caster and LiDAR links
-- inertial and collision geometry
-- Gazebo Sim differential-drive system
-- simulated 360-degree LiDAR
-- odometry and joint-state topics
+- C++ ROS 2 safety supervisor with emergency-stop, slowdown and stale-sensor fail-safe behavior
+- deterministic C++ unit tests
+- differential-drive Xacro/URDF robot with collision/inertial geometry
+- simulated 360° LiDAR
+- Gazebo differential-drive, odometry and joint-state integration
 - ROS ↔ Gazebo bridge configuration
-- test world with a fixed obstacle
-- ROS 2 simulation launch file
+- test world with obstacle
+- robot-description structural tests
+- ROS 2 Jazzy CI build/test/Xacro validation
+- Nav2 planner/controller/costmap configuration
+- SLAM Toolbox configuration
+- integrated simulation + SLAM + Nav2 + safety launch
+- runtime validation checklist
 
-These simulation assets are **implemented in source**. Runtime behavior will only be described as validated after the simulation is built and executed in a compatible ROS 2 / Gazebo environment.
+## Verification boundary
 
-## Build
+GitHub CI verifies that the ROS 2 workspace builds, the deterministic tests pass, and the Xacro description renders. **Gazebo motion, TF/odometry continuity, SLAM mapping and autonomous Nav2 goal execution remain runtime-validation items** until captured from a compatible ROS 2 Jazzy/Gazebo session.
+
+That distinction is intentional: implemented source is not presented as runtime evidence.
+
+## Build and test
 
 ```bash
 colcon build --symlink-install
 source install/setup.bash
-```
-
-## Run simulation
-
-```bash
-ros2 launch robot_description sim.launch.py
-```
-
-The intended command path is:
-
-```text
-navigation command -> cmd_vel_nav -> safety_supervisor -> cmd_vel_safe -> Gazebo robot
-```
-
-## Test safety policy
-
-```bash
-colcon test --packages-select safety_supervisor
+colcon test
 colcon test-result --verbose
 ```
 
-## Roadmap
+## Run full navigation stack
 
-1. Safety supervisor — **implemented**
-2. Differential-drive URDF/Xacro — **implemented**
-3. Gazebo simulation assets — **implemented; runtime validation pending**
-4. TF and odometry runtime validation
-5. Nav2 integration
-6. SLAM/localization
-7. Navigation failure tests
-8. Reproducible demo evidence
+```bash
+ros2 launch robot_navigation navigation.launch.py
+```
 
-## Evidence standard
+See `docs/runtime-validation.md` and `docs/nav2.md` for validation criteria.
 
-This repository deliberately separates **source implementation** from **runtime validation**. Nav2, SLAM, successful Gazebo motion, and physical hardware operation are not claimed until they are actually demonstrated and tested.
+## Portfolio status
+
+**Feature-complete source baseline; runtime demo validation pending.**
+
+The repository is designed as a portfolio project demonstrating ROS 2 package architecture, C++ safety logic, robot description, simulation integration, navigation configuration, testing, and evidence-aware engineering. Physical-hardware deployment is outside the current scope.
