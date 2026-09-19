@@ -1,0 +1,17 @@
+name: source-check
+on: [push, pull_request]
+jobs:
+  source-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check expected files
+        run: |
+          test -f src/safety_supervisor/package.xml
+          test -f src/safety_supervisor/CMakeLists.txt
+          test -f src/safety_supervisor/src/safety_policy.cpp
+          test -f src/safety_supervisor/src/safety_supervisor_node.cpp
+          test -f src/safety_supervisor/test/test_safety_policy.cpp
+      - name: Reject unfinished markers
+        run: |
+          if grep -R -n -E 'TODO|FIXME' src/safety_supervisor; then exit 1; fi
