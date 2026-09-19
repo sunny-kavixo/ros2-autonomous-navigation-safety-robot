@@ -48,6 +48,22 @@ GitHub CI verifies that the ROS 2 workspace builds, the deterministic tests pass
 
 That distinction is intentional: implemented source is not presented as runtime evidence.
 
+## Demo evidence
+
+Runtime screenshots and video will be added here **after the full ROS 2 Jazzy/Gazebo validation is actually run and captured**. No simulated screenshot, stock image, generated image, or unrelated robotics video is presented as evidence of this repository.
+
+Planned evidence:
+
+1. Gazebo robot spawned in the test world
+2. Live 360° LiDAR `/scan`
+3. Odometry and `odom -> base_footprint` TF
+4. Safety-supervisor STOP / SLOW / PASS behavior
+5. SLAM Toolbox map generation
+6. Nav2 autonomous goal execution
+7. Short end-to-end demo video
+
+Validation procedure and PASS criteria are documented in `docs/runtime-validation.md`.
+
 ## Build and test
 
 ```bash
